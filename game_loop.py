@@ -42,4 +42,3 @@ while True:
         manager.game_loop.run_loopers()
 
     clock.tick(manager.game_loop.fps)
-    # print(clock)

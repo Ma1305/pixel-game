@@ -1,4 +1,5 @@
 from main_folder.game_setup import *
+from main_folder.weapons import *
 
 # player
 player_info = {
@@ -79,6 +80,10 @@ def player_movement():
 
     game_graphics.camera.x = player.x
 
+    # attacking
+    if keys[pygame.K_k]:
+        player.weapon.attack()
+
 
 player_movement_looper = user_input.Looper("player-movement", player_movement)
 game_graphics.add_looper(player_movement_looper)
@@ -104,3 +109,5 @@ def player_jump(event):
 
 player_jump_input = user_input.InputFunc("player_jump", pygame.KEYDOWN, player_jump, pass_event=True)
 game_graphics.add_input_func(player_jump_input)
+
+sword = DefaultSword(player)

@@ -337,6 +337,7 @@ class Player(Character):
     dash_wait_frame = int(manager.game_loop.fps/3)
     dash_frame_reset = manager.game_loop.fps*3
     dash_cloud = None
+    weapon = None
 
     def stump(self, character):
         if character.character_type == "enemy":
@@ -486,3 +487,78 @@ class Cloud:
     def delete_cloud(self):
         self.shape.game_graphics.shape_list.remove(self.shape)
         # self.shape.game_graphics.looper_list.remove(self.animation_looper)
+
+
+class Sword:
+    size = [0, 0]
+    fix = [0, 0, 0, 0]
+    frames = []
+    sword_name = "default"
+    frame = 0
+    attacking = False
+    up_or_side = "up"
+    switching_wait_frame = int(manager.game_loop.fps/2)
+    image_shape = None
+    loop_looper = None
+
+    def __init__(self, player):
+        self.player = player
+
+    def setup(self):
+        self.image_shape = graphics.Shape(self.player.shape.game_graphics, image)
+        change_to_image(self.image_shape, 0, 0, "sword-pic", self.frames[self.up_or_side][self.player.facing])
+        self.player.weapon = self
+        self.loop_looper = user_input.Looper("sword-loop", self.loop)
+        self.player.shape.game_graphics.add_looper(self.loop_looper)
+        self.player.shape.game_graphics.add_shape(self.image_shape)
+
+    def loop(self):
+        pos = self.player.get_box_collider()
+        if self.player.facing == "right":
+            if self.up_or_side == "up":
+                self.image_shape.x = pos[0] + pos[2] - self.fix[0]
+            else:
+                self.image_shape.x = pos[0] + pos[2] - self.fix[1]
+        else:
+            if self.up_or_side == "up":
+                self.image_shape.x = pos[0] - self.size[0] + self.fix[0]
+            else:
+                self.image_shape.x = pos[0] - self.size[1] + self.fix[1]
+
+        if self.up_or_side == "up":
+            self.image_shape.y = -pos[1] - self.fix[2]
+        else:
+            self.image_shape.y = -pos[1] - (pos[3]/2) - self.fix[3]
+        if self.attacking:
+            self.frame += 1
+            if self.frame % self.switching_wait_frame == 0:
+                if self.up_or_side == "up":
+                    self.up_or_side = "side"
+                else:
+                    self.up_or_side = "up"
+            if self.frame >= (self.switching_wait_frame*2):
+                self.frame = 0
+                self.attacking = False
+        self.image_shape.image = self.frames[self.up_or_side][self.player.facing]
+
+    def attack(self, ignore=False):
+        if not self.attacking or ignore:
+            self.attacking = True
+            self.frame = 0
+
+    # info: {"name", "frames", "size", "switching-wait-frame", "fix"}
+    def setup_sword_from_info(self, info):
+        self.sword_name = info["name"]
+        self.size = info["size"]
+        self.frames = info["frames"]
+
+        # resizing images
+        for sword_frame in self.frames:
+            for sword_direction in self.frames[sword_frame]:
+                if sword_frame == "up":
+                    self.frames[sword_frame][sword_direction] = pygame.transform.scale(self.frames[sword_frame][sword_direction], self.size)
+                else:
+                    self.frames[sword_frame][sword_direction] = pygame.transform.scale(self.frames[sword_frame][sword_direction], [self.size[1], self.size[0]])
+
+        self.switching_wait_frame = info["switching-wait-frame"]
+        self.fix = info["fix"]
