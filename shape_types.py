@@ -103,18 +103,25 @@ def change_to_image(shape, x, y, file_name, image=None, dimensions=None, real=Fa
 
 
 def draw_image(self):
+    screen_rect = pygame.Rect(0, 0, self.game_graphics.screen.width, self.game_graphics.screen.height)
+    image_rect = pygame.Rect(self.x, self.y, 200, 200)
+
     if self.real:
-        self.game_graphics.screen.screen.blit(self.image, (self.x, self.y))
+        if image_rect.colliderect(screen_rect):
+            self.game_graphics.screen.screen.blit(self.image, (self.x, self.y))
         return None
 
     pos = self.game_graphics.camera.vr_to_real((self.x, self.y))
+    image_rect = pygame.Rect(pos[0], pos[1], 200, 200)
 
     if self.previous_zoom != self.game_graphics.camera.zoom:
         self.previous_zoom = self.game_graphics.camera.zoom
         dimensions = (self.dimensions[0] * self.previous_zoom, self.dimensions[1] * self.previous_zoom)
         self.image = pygame.transform.scale(self.image, dimensions)
+        image_rect = pygame.Rect(pos[0], pos[1], dimensions[0], dimensions[1])
 
-    self.game_graphics.screen.screen.blit(self.image, pos)
+    if image_rect.colliderect(screen_rect):
+        self.game_graphics.screen.screen.blit(self.image, pos)
 
 
 def move_image(self, movement):

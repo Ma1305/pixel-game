@@ -39,15 +39,15 @@ class Demon(Enemy):
         "box-collider": [16, 20, 16, 34]
     }
     random_movement_wait_frame = manager.game_loop.fps*5
-    run_speed = 1.5
+    run_speed = 2
 
-    def __init__(self, x, y, game_graphics, demon_info=demon_info, add_shape=True):
+    def __init__(self, x, y, game_graphics, demon_info=demon_info, add_shape=True, random_movement=True):
         self.x = x
         self.y = y
         self.random_movement_frame = 0
         self.shape = graphics.Shape(game_graphics, image)
         change_to_image(self.shape, x, y, "demon frames", load=False)
-        self.setup_character_from_dict(demon_info)
+        self.setup_character_from_dict(self.demon_info)
         self.y = y
         self.x = x
 
@@ -60,10 +60,14 @@ class Demon(Enemy):
         self.animation_looper = demon_image_animation_looper
 
         self.random_movement_looper = user_input.Looper("demon-random-movement", self.random_movement)
-        game_graphics.add_looper(self.random_movement_looper)
+        if random_movement:
+            self.add_random_movement()
 
         self.movement_looper = user_input.Looper("demon-movement-looper", self.movement)
         game_graphics.add_looper(self.movement_looper)
+
+    def add_random_movement(self):
+        self.shape.game_graphics.add_looper(self.random_movement_looper)
 
     def random_movement(self):
         self.random_movement_frame += 1
@@ -82,7 +86,8 @@ class Demon(Enemy):
             self.animation_state = move_mode
 
     def after_death(self):
-        self.shape.game_graphics.looper_list.remove(self.random_movement_looper)
+        if self.random_movement_looper in self.shape.game_graphics.looper_list:
+            self.shape.game_graphics.looper_list.remove(self.random_movement_looper)
 
 
 class Trap(Ground, Enemy):
@@ -153,7 +158,7 @@ class Trap(Ground, Enemy):
 
 class BrickGround(Ground):
     ground_type = "basic-brick"
-    brick_size = [22, 22]
+    brick_size = [30, 30]
     top_image = pygame.image.load("images/frames/wall_top_mid.png")
     right_image = pygame.image.load("images/frames/wall_corner_right.png")
     left_image = pygame.image.load("images/frames/wall_corner_left.png")
@@ -258,6 +263,7 @@ class BrickGround(Ground):
             counter += 1
 
     def set_all_image_sizes(self):
+        print(self.brick_size)
         BrickGround.top_image = pygame.transform.scale(self.top_image, self.brick_size)
         BrickGround.right_image = pygame.transform.scale(self.right_image, self.brick_size)
         BrickGround.left_image = pygame.transform.scale(self.left_image, self.brick_size)

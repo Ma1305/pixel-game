@@ -34,7 +34,7 @@ demon_info = {
 }
 
 '''# demon1
-demon1 = game.Demon(-100, 400, game_graphics)
+demon1 = game.Demon(100, 200, game_graphics, random_movement=False)
 characters.append(demon1)'''
 
 

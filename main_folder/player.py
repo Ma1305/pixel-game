@@ -37,7 +37,7 @@ change_to_image(player_shape, 0, 0, "player frames", load=False)
 player = game.Player()
 player.shape = player_shape
 player.setup_character_from_dict(player_info)
-player.y = player_info["size"][1]
+player.y = player_info["size"][1]+10
 player.run_speed = 3
 
 game_graphics.add_shape(player_shape)
@@ -69,19 +69,19 @@ def player_movement():
         player.animation_state = "idle"
 
     # move player
-    player.movement()
     run_speed = player.run_speed
 
     if keys[pygame.K_DOWN] or keys[pygame.K_s]:
         if player.jumping:
             player.finish_jump()
         if player.falling:
-            player.y -= run_speed*2
+            player.velocity[1] -= run_speed*2
 
+    player.movement()
     game_graphics.camera.x = player.x
 
     # attacking
-    if keys[pygame.K_k]:
+    if keys[pygame.K_f]:
         player.weapon.attack()
 
 
@@ -111,3 +111,17 @@ player_jump_input = user_input.InputFunc("player_jump", pygame.KEYDOWN, player_j
 game_graphics.add_input_func(player_jump_input)
 
 sword = DefaultSword(player)
+
+
+def compare_player():
+    global player, characters
+    for character in characters:
+        if character == player:
+            continue
+        if player.weapon.attacking:
+            if character.mask_collide(player.weapon.get_mask(), player.weapon.image_shape.x, player.weapon.image_shape.y):
+                character.die()
+
+
+player_compare_looper = user_input.Looper("compare-player", compare_player)
+game_graphics.add_looper(player_compare_looper)

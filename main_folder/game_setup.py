@@ -23,6 +23,8 @@ game.Character.jump_wait_frame = int(manager.game_loop.fps/2.5)
 # game variables
 characters = []
 
+items = []
+
 grounds = []
 
 traps = []
@@ -31,14 +33,16 @@ game_graphics.storage["characters"] = characters
 game_graphics.storage["grounds"] = grounds
 
 
+# setting up gravity
 gravity_force = 5
 
 
 def gravity():
-    global characters
+    global characters, items
     for character in characters:
-        if character.falling:
-            character.y -= gravity_force
+        character.velocity[1] -= gravity_force
+        '''if character.falling:
+            character.velocity[1] -= gravity_force
             box_collider = character.get_box_collider()
             character_collider = pygame.Rect(box_collider[0], box_collider[1], box_collider[2], box_collider[3]+1)
             for other_character in characters:
@@ -48,10 +52,10 @@ def gravity():
                 if character_collider.colliderect(other_character_collider):
                     character.y = -other_character_collider[1] + box_collider[3]
                     character.on_character_collision(other_character)
-                    character.stump(other_character)
+                    character.stump(other_character)'''
 
         # checking if character is on the ground
-        box_collider = character.get_box_collider()
+        '''box_collider = character.get_box_collider()
         character_collider = pygame.Rect(box_collider[0], box_collider[1], box_collider[2], box_collider[3]+1)
         on_ground = False
         for ground in grounds:
@@ -61,17 +65,23 @@ def gravity():
                 on_ground = True
                 break
         if not on_ground and not character.jumping:
-            character.falling = True
+            character.falling = True'''
 
-        for trap in traps:
+        ''' for trap in traps:
             if character_collider.colliderect(trap.box_collider) and character.character_type == "player":
-                trap.attack()
+                trap.attack()'''
+
+    # setting up gravity for items
+    '''for item in items:
+        if not item.onGround:
+            item.y -= gravity_force'''
 
 
 gravity_looper = user_input.Looper("gravity", gravity)
 game_graphics.add_looper(gravity_looper)
 
 
+# animating the traps
 def animate_traps():
     global traps
     for trap in traps:
@@ -80,3 +90,7 @@ def animate_traps():
 
 trap_animation_looper = user_input.Looper("trap", animate_traps)
 game_graphics.add_looper(trap_animation_looper)
+
+
+def character_loopers():
+    pass

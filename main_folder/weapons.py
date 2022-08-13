@@ -14,7 +14,7 @@ class DefaultSword(Sword):
                 "left": pygame.image.load("images/default-sword/weapon_anime_sword_side_left.png")
             }
         },
-        "switching-wait-frame": int(manager.game_loop.fps/4),
+        "switching-wait-frame": int(manager.game_loop.fps/8),
         "size": [10, 25],
         "fix": [7, 5, 3, 0]
     }
