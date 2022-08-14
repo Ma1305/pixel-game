@@ -10,3 +10,5 @@ import main_folder.player
 import main_folder.enemies
 
 
+# manager.game_loop.fps = 40
+

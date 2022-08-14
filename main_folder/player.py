@@ -32,22 +32,10 @@ player_info = {
     "run-wait-frame": int(manager.game_loop.fps/10),
     "box-collider": [0, 20, 32, 36]
 }
-player_shape = graphics.Shape(game_graphics, image)
-change_to_image(player_shape, 0, 0, "player frames", load=False)
-player = game.Player()
-player.shape = player_shape
-player.setup_character_from_dict(player_info)
+player = game.Player(game_graphics, player_info)
 player.y = player_info["size"][1]+10
-player.run_speed = 3
 
-game_graphics.add_shape(player_shape)
 characters.append(player)
-
-
-# player image animation game loop
-player_image_animation_looper = user_input.Looper("player-image-animation", player.image_animation)
-game_graphics.add_looper(player_image_animation_looper)
-player.animation_looper = player_image_animation_looper
 
 
 def player_movement():
@@ -74,10 +62,8 @@ def player_movement():
     if keys[pygame.K_DOWN] or keys[pygame.K_s]:
         if player.jumping:
             player.finish_jump()
-        if player.falling:
-            player.velocity[1] -= run_speed*2
+        player.velocity[1] -= run_speed*2
 
-    player.movement()
     game_graphics.camera.x = player.x
 
     # attacking
@@ -100,7 +86,7 @@ def player_jump(event):
     if event.key == pygame.K_SPACE or event.key == pygame.K_w:
         player.jump()
     elif event.mod == pygame.KMOD_LSHIFT or event.mod == pygame.KMOD_RSHIFT or event.mod == pygame.KMOD_SHIFT:
-        player.jump_speed = game.Character.jump_speed * 2
+        player.jump_speed = int(game.Character.jump_speed * 1.5)
 
     '''# dash
     if event.key == pygame.K_RETURN:

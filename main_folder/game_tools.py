@@ -7,16 +7,18 @@ import user_input
 
 class Character:
     # character information
-    shape = None
+    shape = None  # the image
     size = []
     x = 0
     y = 0
     jump_speed = 10
-    velocity = [0, 0]
-    character_type = ""
-    collider_info = None
+    velocity = [0, 0]  # resets every loading time
+    character_type = ""  # to differentiate between players and enemies or others
+    collider_info = None  # more accurate box collider [offset x, offset y, width, length]
 
     # animation information
+
+    # idle animation
     idle_right_file_names = []
     idle_right_frames = []
     idle_right_frames_length = 0
@@ -26,6 +28,7 @@ class Character:
     idle_wait_frames = 0
     idle_frame = 0
 
+    # right and left movement and animation
     run_right_file_names = []
     run_right_frames = []
     run_right_frames_length = 0
@@ -35,15 +38,16 @@ class Character:
     run_wait_frames = 0
     run_frame = 0
 
+    # jumping movement and animation
     jumping = False
     jump_count = 0
     jump_wait_frame = 0
 
-    falling = False
+    falling = False  # used to know when on ground
 
     frame = 0
-    animation_state = "idle"
-    facing = "right"
+    animation_state = "idle"  # what animation is happening
+    facing = "right"  # where is the character facing
 
     run_speed = 0
 
@@ -52,6 +56,8 @@ class Character:
 
     def image_animation(self):
         self.frame += 1
+
+        # idle animation
         if self.animation_state == "idle":
             if self.frame % self.idle_wait_frames == 0:
                 if self.facing == "right":
@@ -67,6 +73,7 @@ class Character:
 
                     self.shape.image = self.idle_left_frames[self.idle_frame]
 
+        # run right animation
         elif self.animation_state == "run-right":
             self.facing = "right"
             if self.frame % self.run_wait_frames == 0:
@@ -75,6 +82,7 @@ class Character:
                     self.run_frame = 0
                 self.shape.image = self.run_right_frames[self.run_frame]
 
+        # run left animation
         elif self.animation_state == "run-left":
             self.facing = "left"
             if self.frame % self.run_wait_frames == 0:
@@ -83,6 +91,7 @@ class Character:
                     self.run_frame = 0
                 self.shape.image = self.run_left_frames[self.run_frame]
 
+        # sprint right animation
         elif self.animation_state == "sprint-right":
             self.facing = "right"
             if self.frame % int(self.run_wait_frames/2) == 0:
@@ -91,6 +100,7 @@ class Character:
                     self.run_frame = 0
                 self.shape.image = self.run_right_frames[self.run_frame]
 
+        # sprint left animation
         elif self.animation_state == "sprint-left":
             self.facing = "left"
             if self.frame % int(self.run_wait_frames/2) == 0:
@@ -99,11 +109,15 @@ class Character:
                     self.run_frame = 0
                 self.shape.image = self.run_left_frames[self.run_frame]
 
+        # adjusting the x and y position of the image
         self.shape.x = self.x
         self.shape.y = self.y
+
+        # resetting the frame counter every 20 seconds
         if self.frame > manager.game_loop.fps * 20:
             self.frame = 0
 
+        # jumping state checker
         if self.jumping:
             self.jump_count += 1
             if self.jump_count >= self.jump_wait_frame:
@@ -210,58 +224,65 @@ class Character:
         self.x += self.velocity[0]
         self.y += self.velocity[1]
 
+        velocity = self.velocity.copy()
+        self.velocity = [0, 0]
+
         # ground collision
         box_collider = self.get_box_collider()
         for ground in grounds:
             if box_collider.colliderect(ground.box_collider):
                 # jumping ground collision
-                if self.velocity[1] > 0:
-                    box_collider.y -= -self.velocity[1]
+                if velocity[1] > 0:
+                    box_collider.y -= -velocity[1]
                     if not box_collider.colliderect(ground.box_collider):
                             self.falling = True
                             self.finish_jump()
+                            # self.y += -velocity[1]
                             self.y = -ground.box_collider[1] - ground.box_collider[3] + self.collider_info[1]
 
-                    box_collider.y += -self.velocity[1]
+                    box_collider.y += -velocity[1]
 
                 # right ground collision
-                if self.velocity[0] > 0:
-                    box_collider.x -= self.velocity[0]
+                if velocity[0] > 0:
+                    box_collider.x -= velocity[0]
                     if not box_collider.colliderect(ground.box_collider):
                             self.falling = False
+                            # self.x += -velocity[0]
                             self.x = ground.box_collider[0] - box_collider[2] - self.collider_info[0]
 
-                    box_collider.x += self.velocity[0]
+                    box_collider.x += velocity[0]
 
                 # left ground collision
-                if self.velocity[0] < 0:
-                    box_collider.x -= self.velocity[0]
+                if velocity[0] < 0:
+                    box_collider.x -= velocity[0]
                     if not box_collider.colliderect(ground.box_collider):
                             self.falling = False
+                            # self.x += -velocity[0]
                             self.x = ground.box_collider[0] + ground.box_collider[2] - self.collider_info[0]
 
-                    box_collider.x += self.velocity[0]
+                    box_collider.x += velocity[0]
 
                 # bottom ground collision
-                if self.velocity[1] < 0:
-                    box_collider.y -= -self.velocity[1]
+                if velocity[1] < 0:
+                    box_collider.y -= -velocity[1]
                     if not box_collider.colliderect(ground.box_collider):
                             self.falling = False
+                            # self.y += -velocity[1]
                             self.y = -ground.box_collider[1] + box_collider[3] + self.collider_info[1]
 
-                    box_collider.y += -self.velocity[1]
+                    box_collider.y += -velocity[1]
 
         # character collision
         minimum_bits = 10
-        side_minimum = 20
+        side_minimum = 15
         for character in characters:
             if character == self:
                 continue
             # other_character_collider = character.get_box_collider()
             if self.mask_collide(character.get_mask(), character.x, character.y) >= minimum_bits:
                 # jump character collision
-                if self.velocity[1] > 0:
-                    if self.mask_collide(character.get_mask(), character.x, character.y + self.velocity[1]) < minimum_bits:
+                if velocity[1] > 0:
+                    if self.mask_collide(character.get_mask(), character.x, character.y + velocity[1]) < minimum_bits:
                         # self.y = -other_character_collider[1] - other_character_collider[3] + self.collider_info[1]
                         self.on_character_collision(character)
                         self.top_character_collision(character)
@@ -269,8 +290,8 @@ class Character:
                         character.on_character_collision(self)
 
                 # right character collision
-                if self.velocity[0] > 0:
-                    if self.mask_collide(character.get_mask(), character.x + self.velocity[0], character.y) < side_minimum:
+                if velocity[0] > 0:
+                    if self.mask_collide(character.get_mask(), character.x + velocity[0], character.y) < side_minimum:
                         # self.x = other_character_collider[0] - box_collider[2] - self.collider_info[0]
                         self.on_character_collision(character)
                         self.side_character_collision(character)
@@ -280,8 +301,8 @@ class Character:
                         character.on_character_collision(self)
 
                 # left character collision
-                if self.velocity[0] < 0:
-                    if self.mask_collide(character.get_mask(), character.x + self.velocity[0], character.y) < side_minimum:
+                if velocity[0] < 0:
+                    if self.mask_collide(character.get_mask(), character.x + velocity[0], character.y) < side_minimum:
                         # self.x = other_character_collider[0] + other_character_collider[2] - self.collider_info[0]
                         self.on_character_collision(character)
                         self.side_character_collision(character)
@@ -291,15 +312,14 @@ class Character:
                         character.on_character_collision(self)
 
                 # bottom character collision
-                if self.velocity[1] < 0:
-                    if self.mask_collide(character.get_mask(), character.x, character.y + self.velocity[1]) < minimum_bits:
+                if velocity[1] < 0:
+                    if self.mask_collide(character.get_mask(), character.x, character.y + velocity[1]) < minimum_bits:
                         # self.y = -other_character_collider[1] + box_collider[3]
                         self.on_character_collision(character)
                         self.stump(character)
                         character.top_character_collision(self)
                         character.on_character_collision(self)
 
-        self.velocity = [0, 0]
         self.after_movement()
 
     def on_character_collision(self, character):
@@ -372,6 +392,10 @@ class Character:
 class Level:
     characters = []
     surfaces = []
+    ground_images = []
+    ground_colliders = []
+    items = []
+    grounds = []
 
 
 class Ground:
@@ -395,6 +419,28 @@ class Player(Character):
     dash_frame_reset = manager.game_loop.fps*3
     dash_cloud = None
     weapon = None
+    run_speed = 2
+
+    def __init__(self, game_graphics, player_info):
+        # setting up player image
+        player_shape = graphics.Shape(game_graphics, image)
+        change_to_image(player_shape, 0, 0, "player frames", load=False)
+
+        # setting player info
+        self.shape = player_shape
+        self.setup_character_from_dict(player_info)
+
+        game_graphics.add_shape(player_shape)
+
+        # player movement loop
+        player_movement_looper = user_input.Looper("player-movement", self.movement)
+        game_graphics.add_looper(player_movement_looper)
+        self.animation_looper = player_movement_looper
+
+        # setting up the animation loop
+        player_image_animation_looper = user_input.Looper("player-image-animation", self.image_animation)
+        game_graphics.add_looper(player_image_animation_looper)
+        self.animation_looper = player_image_animation_looper
 
     def stump(self, character):
         if character.character_type == "enemy":
@@ -554,6 +600,8 @@ class Cloud:
 
 class Item:
     state = "stationary"
+    x = 0
+    y = 0
 
 
 class Sword(Item):

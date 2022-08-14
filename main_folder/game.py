@@ -39,7 +39,7 @@ class Demon(Enemy):
         "box-collider": [16, 20, 16, 34]
     }
     random_movement_wait_frame = manager.game_loop.fps*5
-    run_speed = 2
+    run_speed = 1
 
     def __init__(self, x, y, game_graphics, demon_info=demon_info, add_shape=True, random_movement=True):
         self.x = x
