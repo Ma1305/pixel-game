@@ -5,7 +5,7 @@ import manager
 import main_folder.game as game
 
 # setting up the game graphics
-screen = graphics.Screen(1200, 800)
+screen = graphics.Screen(1600, 900)
 game_graphics = graphics.GameGraphics(screen, None)
 camera = graphics.Camera(0, 0, 1, game_graphics)
 game_graphics.camera = camera
@@ -13,7 +13,7 @@ game_graphics.camera = camera
 graphics.add_game_graphics(game_graphics)
 
 # setting up the actual game
-manager.game_loop.make_screen(1200, 800)
+manager.game_loop.make_screen(1600, 900)
 manager.game_loop.set_main_game_graphics(game_graphics)
 manager.game_loop.fps = 60
 
