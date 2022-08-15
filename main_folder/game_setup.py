@@ -5,7 +5,7 @@ import manager
 import main_folder.game as game
 
 # setting up the game graphics
-screen = graphics.Screen(900, 700)
+screen = graphics.Screen(1200, 800)
 game_graphics = graphics.GameGraphics(screen, None)
 camera = graphics.Camera(0, 0, 1, game_graphics)
 game_graphics.camera = camera
@@ -13,7 +13,7 @@ game_graphics.camera = camera
 graphics.add_game_graphics(game_graphics)
 
 # setting up the actual game
-manager.game_loop.make_screen(900, 700)
+manager.game_loop.make_screen(1200, 800)
 manager.game_loop.set_main_game_graphics(game_graphics)
 manager.game_loop.fps = 60
 
@@ -29,12 +29,14 @@ grounds = []
 
 traps = []
 
+triggers = []
+
 game_graphics.storage["characters"] = characters
 game_graphics.storage["grounds"] = grounds
 
 
 # setting up gravity
-gravity_force = 5
+gravity_force = 6
 
 
 def gravity():
@@ -92,5 +94,14 @@ trap_animation_looper = user_input.Looper("trap", animate_traps)
 game_graphics.add_looper(trap_animation_looper)
 
 
-def character_loopers():
-    pass
+def trigger_loops():
+    global triggers, characters
+    for character in characters:
+        character_collider = character.get_box_collider()
+        for trigger in triggers:
+            if trigger.collide(character_collider):
+                trigger.trig(character)
+
+
+triggers_looper = user_input.Looper("trigger-loops", trigger_loops)
+game_graphics.add_looper(triggers_looper)

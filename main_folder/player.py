@@ -3,7 +3,7 @@ from main_folder.weapons import *
 
 # player
 player_info = {
-    "size": (32, 56),
+    "size": (48, 84),
     "idle-right-files": [
         "images/knight/knight_m_right_idle_anim_f0.png",
         "images/knight/knight_m_right_idle_anim_f1.png",
@@ -30,7 +30,7 @@ player_info = {
         "images/knight/knight_m_run_right_anim_f3.png"
     ],
     "run-wait-frame": int(manager.game_loop.fps/10),
-    "box-collider": [0, 20, 32, 36]
+    "box-collider": [0, 20, 48, 64]
 }
 player = game.Player(game_graphics, player_info)
 player.y = player_info["size"][1]+10
@@ -65,6 +65,7 @@ def player_movement():
         player.velocity[1] -= run_speed*2
 
     game_graphics.camera.x = player.x
+    # game_graphics.camera.y = player.y
 
     # attacking
     if keys[pygame.K_f]:
@@ -96,7 +97,7 @@ def player_jump(event):
 player_jump_input = user_input.InputFunc("player_jump", pygame.KEYDOWN, player_jump, pass_event=True)
 game_graphics.add_input_func(player_jump_input)
 
-sword = DefaultSword(player)
+sword = DefaultSword(player, size=[15, 38])
 
 
 def compare_player():

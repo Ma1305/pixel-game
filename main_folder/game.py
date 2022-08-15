@@ -9,7 +9,7 @@ from main_folder.game_tools import *
 class Demon(Enemy):
     enemy_type = "demon"
     demon_info = {
-        "size": (48, 54),
+        "size": (72, 81),
         "idle-right-files": [
             "images/demon/big_demon_right_idle_anim_f0.png",
             "images/demon/big_demon_right_idle_anim_f1.png",
@@ -36,7 +36,7 @@ class Demon(Enemy):
             "images/demon/big_demon_run_right_anim_f3.png"
         ],
         "run-wait-frame": int(manager.game_loop.fps/10),
-        "box-collider": [16, 20, 16, 34]
+        "box-collider": [20, 20, 32, 61]
     }
     random_movement_wait_frame = manager.game_loop.fps*5
     run_speed = 1
@@ -165,11 +165,11 @@ class BrickGround(Ground):
     bottom_image = pygame.image.load("images/frames/wall_top_mid.png")
     middle_image = pygame.image.load("images/frames/wall_mid.png")
 
-    def __init__(self, x, y, brick_width, brick_height, game_graphics, brick_size=brick_size, right_wall=True, top_wall=True, left_wall=True, bottom_wall=True, set_sizes=False):
+    def __init__(self, x, y, brick_width, brick_height, game_graphics, right_wall=True, top_wall=True, left_wall=True, bottom_wall=True, set_sizes=True):
         self.x = x
         self.y = y
-        self.width = brick_width * brick_size[0]
-        self.height = brick_height * brick_size[1]
+        self.width = brick_width * self.brick_size[0]
+        self.height = brick_height * self.brick_size[1]
         self.brick_width = brick_width
         self.brick_height = brick_height
         self.game_graphics = game_graphics
@@ -177,14 +177,14 @@ class BrickGround(Ground):
         self.top_wall = top_wall
         self.left_wall = left_wall
         self.bottom_wall = bottom_wall
-        if brick_size != self.brick_size and not set_sizes:
-            self.brick_size = brick_size
-            self.top_image = pygame.transform.scale(self.top_image, brick_size)
-            self.right_image = pygame.transform.scale(self.right_image, brick_size)
-            self.left_image = pygame.transform.scale(self.left_image, brick_size)
-            self.bottom_image = pygame.transform.scale(self.bottom_image, brick_size)
-            self.middle_image = pygame.transform.scale(self.middle_image, brick_size)
-        self.brick_size = brick_size
+        if self.brick_size != self.brick_size and not set_sizes:
+            self.brick_size = self.brick_size
+            self.top_image = pygame.transform.scale(self.top_image, self.brick_size)
+            self.right_image = pygame.transform.scale(self.right_image, self.brick_size)
+            self.left_image = pygame.transform.scale(self.left_image, self.brick_size)
+            self.bottom_image = pygame.transform.scale(self.bottom_image, self.brick_size)
+            self.middle_image = pygame.transform.scale(self.middle_image, self.brick_size)
+        self.brick_size = self.brick_size
 
         self.box_collider = pygame.Rect(x, -y, self.width, self.height)
         self.images = []
@@ -195,6 +195,7 @@ class BrickGround(Ground):
 
     def create_images(self):
         self.images = []
+        # print(self.brick_size)
 
         # top
         if self.top_wall:
@@ -263,9 +264,18 @@ class BrickGround(Ground):
             counter += 1
 
     def set_all_image_sizes(self):
-        print(self.brick_size)
-        BrickGround.top_image = pygame.transform.scale(self.top_image, self.brick_size)
-        BrickGround.right_image = pygame.transform.scale(self.right_image, self.brick_size)
-        BrickGround.left_image = pygame.transform.scale(self.left_image, self.brick_size)
-        BrickGround.bottom_image = pygame.transform.scale(self.bottom_image, self.brick_size)
-        BrickGround.middle_image = pygame.transform.scale(self.middle_image, self.brick_size)
+        # print(self.brick_size)
+        BrickGround.top_image = pygame.transform.scale(self.top_image, self.brick_size).convert_alpha()
+        BrickGround.right_image = pygame.transform.scale(self.right_image, self.brick_size).convert_alpha()
+        BrickGround.left_image = pygame.transform.scale(self.left_image, self.brick_size).convert_alpha()
+        BrickGround.bottom_image = pygame.transform.scale(self.bottom_image, self.brick_size).convert_alpha()
+        BrickGround.middle_image = pygame.transform.scale(self.middle_image, self.brick_size).convert_alpha()
+
+
+def set_all_image_sizes(brick_size):
+    # print(self.brick_size)
+    BrickGround.top_image = pygame.transform.scale(BrickGround.top_image, brick_size)
+    BrickGround.right_image = pygame.transform.scale(BrickGround.right_image, brick_size)
+    BrickGround.left_image = pygame.transform.scale(BrickGround.left_image, brick_size)
+    BrickGround.bottom_image = pygame.transform.scale(BrickGround.bottom_image, brick_size)
+    BrickGround.middle_image = pygame.transform.scale(BrickGround.middle_image, brick_size)

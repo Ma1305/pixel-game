@@ -35,6 +35,19 @@ class DefaultSword(Sword):
     switching_wait_frame = info["switching-wait-frame"]
     fix = info["fix"]
 
-    def __init__(self, player):
+    def __init__(self, player, size=None):
         super().__init__(player)
+        if size:
+            self.size = size
+            self.resizing()
         self.setup()
+
+    def resizing(self):
+        for sword_frame in self.frames:
+            for sword_direction in self.frames[sword_frame]:
+                if sword_frame == "up":
+                    self.frames[sword_frame][sword_direction] = pygame.transform.scale(
+                        self.frames[sword_frame][sword_direction], self.size)
+                else:
+                    self.frames[sword_frame][sword_direction] = pygame.transform.scale(
+                        self.frames[sword_frame][sword_direction], [self.size[1], self.size[0]])

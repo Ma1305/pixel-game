@@ -11,7 +11,7 @@ class Character:
     size = []
     x = 0
     y = 0
-    jump_speed = 10
+    jump_speed = 15
     velocity = [0, 0]  # resets every loading time
     character_type = ""  # to differentiate between players and enemies or others
     collider_info = None  # more accurate box collider [offset x, offset y, width, length]
@@ -146,26 +146,26 @@ class Character:
 
         self.idle_right_file_names = information["idle-right-files"]
         for file_name in self.idle_right_file_names:
-            idle_image = pygame.transform.scale(pygame.image.load(file_name), self.size)
+            idle_image = pygame.transform.scale(pygame.image.load(file_name), self.size).convert_alpha()
             self.idle_right_frames.append(idle_image)
         self.idle_right_frames_length = len(self.idle_right_frames)
         self.shape.image = self.idle_right_frames[self.idle_frame]
 
         self.idle_left_file_names = information["idle-left-files"]
         for file_name in self.idle_left_file_names:
-            idle_image = pygame.transform.scale(pygame.image.load(file_name), self.size)
+            idle_image = pygame.transform.scale(pygame.image.load(file_name), self.size).convert_alpha()
             self.idle_left_frames.append(idle_image)
         self.idle_left_frames_length = len(self.idle_left_frames)
 
         self.run_right_file_names = information["run-right-files"]
         for file_name in self.run_right_file_names:
-            run_image = pygame.transform.scale(pygame.image.load(file_name), self.size)
+            run_image = pygame.transform.scale(pygame.image.load(file_name), self.size).convert_alpha()
             self.run_right_frames.append(run_image)
         self.run_right_frames_length = len(self.run_right_frames)
 
         self.run_left_file_names = information["run-left-files"]
         for file_name in self.run_left_file_names:
-            run_image = pygame.transform.scale(pygame.image.load(file_name), self.size)
+            run_image = pygame.transform.scale(pygame.image.load(file_name), self.size).convert_alpha()
             self.run_left_frames.append(run_image)
         self.run_left_frames_length = len(self.run_left_frames)
 
@@ -419,7 +419,7 @@ class Player(Character):
     dash_frame_reset = manager.game_loop.fps*3
     dash_cloud = None
     weapon = None
-    run_speed = 2
+    run_speed = 3
 
     def __init__(self, game_graphics, player_info):
         # setting up player image
