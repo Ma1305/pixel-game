@@ -131,3 +131,32 @@ def move_image(self, movement):
 
 image = graphics.Type("image", draw_image, move=move_image)
 graphics.add_type(image)
+
+
+def change_to_surface(shape, x, y, width, height, real=False):
+    shape.x = x
+    shape.y = y
+    shape.width = width
+    shape.height = height
+    shape.real = real
+    shape.previous_zoom = 1
+    shape.surface = pygame.Surface((width, height))
+
+
+def draw_surface(self):
+    if self.real:
+        self.game_graphics.screen.screen.blit(self.surface, (self.x, self.y))
+        return None
+
+    pos = self.game_graphics.camera.vr_to_real((self.x, self.y))
+
+    if self.previous_zoom != self.game_graphics.camera.zoom:
+        self.previous_zoom = self.game_graphics.camera.zoom
+        dimensions = (self.dimensions[0] * self.previous_zoom, self.dimensions[1] * self.previous_zoom)
+        self.surface = pygame.transform.scale(self.surface, dimensions)
+
+    self.game_graphics.screen.screen.blit(self.surface, pos)
+
+
+surface = graphics.Type("surface", draw_surface)
+graphics.add_type(surface)

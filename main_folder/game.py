@@ -187,7 +187,10 @@ class BrickGround(Ground):
         self.brick_size = self.brick_size
 
         self.box_collider = pygame.Rect(x, -y, self.width, self.height)
+        self.surface = graphics.Shape(game_graphics, surface)
+        change_to_surface(self.surface, x, y, self.width, self.height)
         self.images = []
+        game_graphics.add_shape(self.surface)
         if set_sizes:
             self.set_image_sizes()
         else:
@@ -197,20 +200,14 @@ class BrickGround(Ground):
         self.images = []
         # print(self.brick_size)
 
-        # top
-        if self.top_wall:
-            for x in range(self.brick_width):
-                tile = graphics.Shape(self.game_graphics, image)
-                change_to_image(tile, self.brick_size[0]*x + self.x, self.y+int(self.brick_size[1]/1.1), "top-wall", image=self.top_image)
-                self.game_graphics.add_shape(tile)
-                self.images.append(tile)
+
 
         # middle
         for y in range(self.brick_height):
             for x in range(1, self.brick_width-1):
                 tile = graphics.Shape(self.game_graphics, image)
                 change_to_image(tile, self.x + self.brick_size[0] * x, self.y - self.brick_size[1] * y, "middle-wall", image=self.middle_image)
-                self.game_graphics.add_shape(tile)
+                # self.game_graphics.add_shape(tile)
                 self.images.append(tile)
 
         # left
@@ -218,13 +215,13 @@ class BrickGround(Ground):
             for y in range(self.brick_height):
                 tile = graphics.Shape(self.game_graphics, image)
                 change_to_image(tile, self.x, self.y-self.brick_size[1]*y, "left-wall", image=self.left_image)
-                self.game_graphics.add_shape(tile)
+                # self.game_graphics.add_shape(tile)
                 self.images.append(tile)
         else:
             for y in range(self.brick_height):
                 tile = graphics.Shape(self.game_graphics, image)
                 change_to_image(tile, self.x, self.y-self.brick_size[1]*y, "left-wall", image=self.middle_image)
-                self.game_graphics.add_shape(tile)
+                # self.game_graphics.add_shape(tile)
                 self.images.append(tile)
 
         # right
@@ -232,22 +229,37 @@ class BrickGround(Ground):
             for y in range(self.brick_height):
                 tile = graphics.Shape(self.game_graphics, image)
                 change_to_image(tile, self.x + self.width - self.brick_size[0], self.y - self.brick_size[1] * y, "right-wall", image=self.right_image)
-                self.game_graphics.add_shape(tile)
+                # self.game_graphics.add_shape(tile)
                 self.images.append(tile)
         else:
             for y in range(self.brick_height):
                 tile = graphics.Shape(self.game_graphics, image)
                 change_to_image(tile, self.x + self.width - self.brick_size[0], self.y - self.brick_size[1] * y, "right-wall", image=self.middle_image)
-                self.game_graphics.add_shape(tile)
+                # self.game_graphics.add_shape(tile)
                 self.images.append(tile)
 
+        # top
+        if self.top_wall:
+            for x in range(self.brick_width):
+                tile = graphics.Shape(self.game_graphics, image)
+                change_to_image(tile, self.brick_size[0] * x + self.x, self.y + int(self.brick_size[1] / 1.1), "top-wall", image=self.top_image)
+                # self.game_graphics.add_shape(tile)
+                self.images.append(tile)
         # bottom
         if self.bottom_wall:
             for x in range(self.brick_width):
                 tile = graphics.Shape(self.game_graphics, image)
                 change_to_image(tile, self.brick_size[0]*x + self.x, self.y+self.brick_size[1]-self.height, "top-wall", image=self.top_image)
-                self.game_graphics.add_shape(tile)
+                # self.game_graphics.add_shape(tile)
                 self.images.append(tile)
+
+        counter = 0
+        for tile in self.images:
+            # pos = tile.game_graphics.camera.vr_to_real((tile.x - self.surface.x, tile.y - self.surface.y))
+            pos = [tile.x - self.surface.x, -(tile.y - self.surface.y)]
+            self.surface.surface.blit(tile.image, pos)
+            counter += 1
+            # print(counter, pos, self.x, self.y, tile.x, tile.y, self.surface.width, self.surface.height)
 
     def set_image_sizes(self):
         self.top_image = pygame.transform.scale(self.top_image, self.brick_size)
