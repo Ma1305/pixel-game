@@ -180,6 +180,7 @@ class Character:
 
     def jump(self):
         if not self.jumping and not self.falling:
+            print("here", self.falling, self.jumping)
             self.jumping = True
             self.jump_count = 0
 
@@ -229,8 +230,11 @@ class Character:
 
         # ground collision
         box_collider = self.get_box_collider()
+        collided = False
         for ground in grounds:
             if box_collider.colliderect(ground.box_collider):
+                collided = True
+
                 # jumping ground collision
                 if velocity[1] > 0:
                     box_collider.y -= -velocity[1]
@@ -266,11 +270,18 @@ class Character:
                 if velocity[1] < 0:
                     box_collider.y -= -velocity[1]
                     if not box_collider.colliderect(ground.box_collider):
-                            self.falling = False
-                            # self.y += -velocity[1]
-                            self.y = -ground.box_collider[1] + box_collider[3] + self.collider_info[1]
+                        self.falling = False
+                        # self.y += -velocity[1]
+                        self.y = -ground.box_collider[1] + box_collider[3] + self.collider_info[1]
+
+                    else:
+                        self.falling = True
 
                     box_collider.y += -velocity[1]
+                else:
+                    self.falling = True
+        if not collided and velocity[1] < 0:
+            self.falling = True
 
         # character collision
         minimum_bits = 10
