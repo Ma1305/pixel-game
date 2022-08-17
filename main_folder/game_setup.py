@@ -27,6 +27,7 @@ class Level:
         self.grounds = []
         self.traps = []
         self.triggers = []
+        self.swords = []
 
         if not game_graphics:
             screen = graphics.Screen(self.width, self.height)
@@ -40,6 +41,9 @@ class Level:
             self.game_graphics.storage["ground_colliders"] = self.ground_colliders
             self.game_graphics.storage["items"] = self.items
             self.game_graphics.storage["grounds"] = self.grounds
+            self.game_graphics.storage["traps"] = self.traps
+            self.game_graphics.storage["triggers"] = self.triggers
+            self.game_graphics.storage["swords"] = self.swords
 
     def setup_level(self, gravity=True, animate_traps=True, trigger_loops=True):
         # setting up gravity

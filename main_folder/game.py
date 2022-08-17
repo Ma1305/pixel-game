@@ -40,6 +40,7 @@ class Demon(Enemy):
     }
     random_movement_wait_frame = manager.game_loop.fps*5
     run_speed = 1
+    random_movement = True
 
     def __init__(self, x, y, game_graphics, demon_info=demon_info, add_shape=True, random_movement=True):
         self.x = x
@@ -60,6 +61,7 @@ class Demon(Enemy):
         self.animation_looper = demon_image_animation_looper
 
         self.random_movement_looper = user_input.Looper("demon-random-movement", self.random_movement)
+        self.random_movement = random_movement
         if random_movement:
             self.add_random_movement()
 

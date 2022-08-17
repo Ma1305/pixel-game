@@ -178,6 +178,34 @@ class Character:
         else:
             self.collider_info = [0, 0, self.size[0], self.size[1]]
 
+    def surfaces_to_string(self):
+        counter = 0
+        frames = self.idle_right_frames
+        for frame in frames:
+            frames[counter] = None
+            counter += 1
+
+        counter = 0
+        frames = self.idle_left_frames
+        for frame in frames:
+            frames[counter] = None
+            counter += 1
+
+        counter = 0
+        frames = self.run_right_frames
+        for frame in frames:
+            frames[counter] = None
+            counter += 1
+
+        counter = 0
+        frames = self.run_left_frames
+        for frame in frames:
+            frames[counter] = None
+            counter += 1
+
+        self.shape.image = None
+        self.shape.game_graphics = None
+
     def jump(self):
         if not self.jumping and not self.falling:
             self.jumping = True
