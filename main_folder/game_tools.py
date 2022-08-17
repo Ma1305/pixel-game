@@ -180,7 +180,6 @@ class Character:
 
     def jump(self):
         if not self.jumping and not self.falling:
-            print("here", self.falling, self.jumping)
             self.jumping = True
             self.jump_count = 0
 
@@ -398,15 +397,6 @@ class Character:
     def get_mask(self):
         mask = pygame.mask.from_surface(self.shape.image)
         return mask
-
-
-class Level:
-    characters = []
-    surfaces = []
-    ground_images = []
-    ground_colliders = []
-    items = []
-    grounds = []
 
 
 class Ground:
