@@ -1,0 +1,31 @@
+list of commands:
+
+- add_info (a or add or add-info)
+    - set_info
+    - follow-pos
+    - follow dimensions (follow-d)
+- modify_info (m or modify)
+- change_name (change_name)
+- camera (c or camera)
+- set_camera (set_cam or set-cam)
+    - set_x (x)
+    - set_y (y)
+    - set_zoom (z or zoom)
+- save (s or save
+- quit (q or quit)
+- get mouse pos (get_pos)
+
+
+generator:
+
+- laod a file or new file
+
+.
+.
+.
+
+- save the file
+.
+.
+.
+- quit

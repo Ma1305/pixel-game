@@ -113,6 +113,12 @@ class Camera:
         point = (self.zoom*point[0], self.zoom*point[1])
         return origin[0]+point[0], origin[1]-point[1]
 
+    def real_to_vr(self, point):
+        origin = self.get_origin()
+        point = [point[0]-origin[0], point[1]-origin[1]]
+        point = [int(point[0]/self.zoom), -int(point[1]/self.zoom)]
+        return point
+
 
 class Screen:
     def __init__(self, width, height):

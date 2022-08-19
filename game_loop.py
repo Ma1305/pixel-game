@@ -1,5 +1,6 @@
 import pygame
 from main_folder import main
+# from main_folder.levels import generate_level
 import graphics as graphics
 import manager as manager
 
@@ -42,4 +43,4 @@ while True:
         manager.game_loop.run_loopers()
 
     clock.tick(manager.game_loop.fps)
-    print(clock)
+    # print(clock)

@@ -1,4 +1,5 @@
 from main_folder.game_setup import *
+from main_folder.game import *
 import main_folder.development_tools as dev
 # import main_folder.levels.level1
 # import importlib
